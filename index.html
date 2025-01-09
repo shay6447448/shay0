@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>טופס למילוי פרטים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 25px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        input, button, textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+            box-sizing: border-box; /* Make sure padding doesn't make elements overflow */
+        }
+
+        input:focus, button:focus, textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        input[type="date"], textarea {
+            background-color: #f8f8f8;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .pdf-link {
+            margin: 10px 0;
+        }
+
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .checkbox-label input {
+            width: auto;
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto; /* Enable scroll if content overflows */
+        }
+
+        /* התאמה למובייל */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            input, button, textarea {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            .checkbox-label {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>טופס למילוי פרטים</h2>
+
+        <!-- שאלה 1: שם מלא -->
+        <label for="fullName">שם מלא:</label>
+        <input type="text" id="fullName" name="fullName" placeholder="הכנס את שמך" required>
+
+        <!-- קישור ל-PDF -->
+        <div class="pdf-link">
+            <a href="https://drive.google.com/file/d/1jNpVLq37CAnSHKK35PD2SDuOg3gJUagr/view" target="_blank">הורד את הבריף</a>
+        </div>
+
+        <!-- אישור בריף -->
+        <div class="checkbox-label">
+            <input type="checkbox" id="briefConfirm" required>
+            <label for="briefConfirm">קראתי את הבריף ואני מאשר אותו</label>
+        </div>
+
+        <!-- תאריך צילום -->
+        <label for="shootDate">תאריך צילום:</label>
+        <input type="date" id="shootDate" name="shootDate" required>
+
+        <!-- קישור ל-PDF נוסף -->
+        <div class="pdf-link">
+            <a href="path/to/agreement.pdf" target="_blank">הורד את הסכם העבודה</a>
+        </div>
+
+        <!-- הערה לחתימה -->
+        <p>יש לעבור על הסכם העבודה, לחתום עליו ולשלוח אותו בוואטסאפ.</p>
+
+        <!-- כפתור שליחה -->
+        <button id="submitButton">שלח טופס</button>
+    </div>
+
+    <script>
+        // JavaScript to handle form submission
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const fullName = document.getElementById('fullName').value;
+            const shootDate = document.getElementById('shootDate').value;
+            const briefConfirmed = document.getElementById('briefConfirm').checked;
+
+            if (!fullName || !shootDate || !briefConfirmed) {
+                alert("יש למלא את כל השדות ולאשר את הבריף.");
+                return;
+            }
+
+            // Create email content with preset recipient email (your email)
+            fetch('https://script.google.com/macros/s/AKfycbxJb3-zjYiPMI4E-iOjkifHaY6xbXvyAJIpAMHpvvayrpQQ7WkV3_hR0W47vXPy_TjbUA/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    fullName: fullName,
+                    shootDate: shootDate,
+                    briefConfirmed: briefConfirmed
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("הנתונים נשלחו בהצלחה!");
+            })
+            .catch(error => {
+                alert("שגיאה בשליחה: " + error);
+            });
+        });
+    </script>
+</body>
+</html>
